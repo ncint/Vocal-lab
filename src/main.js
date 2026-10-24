@@ -21,6 +21,7 @@ function setStateBadge(state, text) {
 engine.onState = (state) => {
   if (state === 'on') {
     setStateBadge('on', 'Motor: activo');
+    masterMuted = true; // cada sessão arranca em silêncio de segurança
     $('sample-rate').textContent = `Frequência: ${(engine.ctx.sampleRate / 1000).toFixed(1)} kHz`;
     const cc = engine.deviceManager.getChannelCount(engine.stream);
     $('inputs-label').textContent = `Entradas: ${Math.min(4, cc)} de ${cc} canal(is)`;
@@ -35,6 +36,7 @@ engine.onState = (state) => {
   $('btn-stop').disabled = state !== 'on';
   $('btn-master-mute').disabled = state !== 'on';
   $('btn-test-tone').disabled = state !== 'on';
+  $('btn-test-tone').textContent = 'Tom de teste';
 };
 
 engine.onFrame = (levels, masterLevel) => {
