@@ -88,6 +88,7 @@ export class AudioEngine {
       });
     }
 
+    this._lastTime = performance.now() / 1000;
     this._setRunning(true);
     this._loop();
     return true;
@@ -118,8 +119,9 @@ export class AudioEngine {
     if (this._raf) cancelAnimationFrame(this._raf);
     this.channels.forEach((c) => c.dispose());
     this.channels = [];
+    this._stopTestTone();
     if (this.mixer) {
-      this.mixer.bus.disconnect();
+      this.mixer.dispose();
       this.mixer = null;
     }
     if (this.sourceNode) {
@@ -130,7 +132,10 @@ export class AudioEngine {
   }
 
   async setOutput(deviceId) {
-    if (!this.ctx) return false;
+    if (!this.ctx) {
+      this.diag.warn('Inicia o áudio primeiro para escolher o dispositivo de saída.');
+      return false;
+    }
     if (typeof this.ctx.setSinkId !== 'function') {
       this.diag.warn('selectAudioOutput/setSinkId não suportado neste navegador; a saída usa o dispositivo por omissão do sistema.');
       return false;
@@ -145,12 +150,17 @@ export class AudioEngine {
     }
   }
 
+  _stopTestTone() {
+    if (!this.testOsc) return;
+    try { this.testOsc.stop(); } catch {}
+    this.testOsc.disconnect();
+    this.testOsc = null;
+    this.diag.info('Tom de teste desligado.');
+  }
+
   toggleTestTone() {
     if (this.testOsc) {
-      try { this.testOsc.stop(); } catch {}
-      this.testOsc.disconnect();
-      this.testOsc = null;
-      this.diag.info('Tom de teste desligado.');
+      this._stopTestTone();
       return false;
     }
     if (!this.ctx || !this.mixer) {
