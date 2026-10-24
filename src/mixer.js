@@ -34,6 +34,13 @@ export class Mixer {
     this.masterGain.gain.setTargetAtTime(muted ? 0 : this.masterVolume, this.ctx.currentTime, 0.02);
   }
 
+  dispose() {
+    this.bus.disconnect();
+    this.masterGain.disconnect();
+    this.limiter.disconnect();
+    this.analyser.disconnect();
+  }
+
   getLevel() {
     this.analyser.getFloatTimeDomainData(this.buf);
     let sum = 0;
