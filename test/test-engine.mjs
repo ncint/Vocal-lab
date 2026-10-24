@@ -113,6 +113,13 @@ test('mistura: inicia em silêncio e o mute geral independe do volume', () => {
   assert.equal(mixer.masterGain.gain.value, 0);
 });
 
+test('mistura: dispose desliga toda a cadeia até destination', () => {
+  const ctx = new FakeAudioContext();
+  const mixer = new Mixer(ctx);
+  mixer.dispose();
+  assert.equal(pathsTo(mixer.bus, ctx.destination), false, 'bus ainda alcança destination após dispose');
+});
+
 test('oscilador: voz acima do limiar abre amplitude', () => {
   const ctx = new FakeAudioContext();
   const o = new OscillatorSynth(ctx);
