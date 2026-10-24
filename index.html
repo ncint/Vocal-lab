@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vocal Lab — diagnóstico e transformação vocal</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="app-header">
+  <h1>Vocal <span>Lab</span></h1>
+  <div class="header-status">
+    <span id="engine-state" class="state-badge off">Motor: inativo</span>
+    <span id="device-label" class="status-item">Dispositivo: —</span>
+    <span id="sample-rate" class="status-item">Frequência: —</span>
+    <span id="inputs-label" class="status-item">Entradas: —</span>
+  </div>
+  <div class="header-actions">
+    <button id="btn-start" class="btn primary">Iniciar áudio</button>
+    <button id="btn-stop" class="btn" disabled>Parar</button>
+    <button id="btn-master-mute" class="btn danger" disabled>Silêncio geral</button>
+    <button id="btn-test-tone" class="btn" disabled>Tom de teste</button>
+  </div>
+</header>
+
+<main>
+  <section id="setup" class="panel">
+    <h2>Configuração</h2>
+    <div class="setup-grid">
+      <label class="field">
+        <span>Dispositivo de entrada</span>
+        <select id="input-device"></select>
+      </label>
+      <label class="field">
+        <span>Dispositivo de saída (se suportado)</span>
+        <select id="output-device" disabled></select>
+      </label>
+      <button id="btn-refresh-devices" class="btn">Actualizar dispositivos</button>
+    </div>
+    <div id="channel-info" class="channel-info">
+      <p>Sem stream activo. Os canais disponíveis são apresentados após a captura.</p>
+    </div>
+    <div id="diagnostics" class="diagnostics" role="log" aria-live="polite"></div>
+  </section>
+
+  <section id="channels" class="channels"></section>
+
+  <section id="master" class="panel master">
+    <h2>Mistura final</h2>
+    <div class="master-controls">
+      <label class="field">
+        <span>Volume geral</span>
+        <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.8">
+      </label>
+      <canvas id="master-meter" width="240" height="20" aria-label="Medidor de saída"></canvas>
+      <span id="clip-indicator" class="clip">CLIP</span>
+      <span id="master-state" class="status-item">Saída: silenciada</span>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Voz original nunca é encaminhada para a saída. Configura a monitorização da MR18 para evitar direct-monitoring.</p>
+</footer>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
